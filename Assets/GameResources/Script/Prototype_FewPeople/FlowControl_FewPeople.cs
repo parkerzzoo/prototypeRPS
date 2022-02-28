@@ -94,8 +94,8 @@ public class FlowControl_FewPeople : FlowControl
 	void OnStartGame(JSONObject data)
 	{
 		float _duration = (float)data.GetNumber("delay");
-		if (_duration > 2)
-			_duration = 2f;
+		if (_duration > 10)
+			_duration = 10f;
 
 		UIControl_FewPeople.Instance.ShowCenterTextPanel("게임 시작", 0f, _duration);
 
@@ -108,8 +108,8 @@ public class FlowControl_FewPeople : FlowControl
 	void OnStartRound(JSONObject data)
 	{
 		float _duration = (float)data.GetNumber("delay");
-		if (_duration > 5)
-			_duration = 5f;
+		if (_duration > 10)
+			_duration = 10f;
 
 		JSONArray _userDatas = data.GetArray("users");
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
@@ -134,8 +134,8 @@ public class FlowControl_FewPeople : FlowControl
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
 
 		float _duration = (float)data.GetNumber("delay");
-		if (_duration > 5)
-			_duration = 5f;
+		if (_duration > 10)
+			_duration = 10f;
 
 		// 내 유저정보를 찾아서, 결과를 출력해줌.
 		for (int i = 0; i < _userList.Count; i++)
@@ -145,7 +145,7 @@ public class FlowControl_FewPeople : FlowControl
 				if (!HandObjectControl_FewPeople.Instance.MyHandObject.Dead)
 				{
 					string _result = _userList[i].currentResult.ToString();
-					UIControl_FewPeople.Instance.ShowCenterTextPanel(_result, 0f, 3f);
+					UIControl_FewPeople.Instance.ShowCenterTextPanel(_result, 0f, _duration);
 				}
 				break;
 			}
