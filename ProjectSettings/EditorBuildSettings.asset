@@ -21,9 +21,9 @@ EditorBuildSettings:
     path: Assets/Scenes/InGame_BasicMode.unity
     guid: dc4761854e1c6466c9fcfe78e5a1410d
   - enabled: 1
-    path: Assets/Scenes/InGame_CardMode.unity
-    guid: 413d758dbebd644a39240963cd4de677
-  - enabled: 1
     path: Assets/Scenes/InGame_ManyPeople.unity
     guid: 0ab7ccd5a4d8a4d04b0db04225081f46
+  - enabled: 1
+    path: Assets/Scenes/InGame_FewPeople.unity
+    guid: 8069bbc617b7d468c9e39bc258ecafd3
   m_configObjects: {}
