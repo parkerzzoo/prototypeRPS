@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum HandType { rock, paper, scissors, empty }
+public enum HandType { empty = 0, rock = 1, paper = 2, scissors = 3 }
 public enum ResultType { win, lose, draw }
 public class HandObject : MonoBehaviour
 {

@@ -97,7 +97,7 @@ public class FlowControl_FewPeople : FlowControl
 		if (_duration > 10)
 			_duration = 10f;
 
-		UIControl_FewPeople.Instance.ShowCenterTextPanel("게임 시작", 0f, _duration);
+		//UIControl_FewPeople.Instance.ShowCenterTextPanel("게임 시작", 0f, _duration);
 
 		JSONArray _userDatas = data.GetArray("users");
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
@@ -125,7 +125,7 @@ public class FlowControl_FewPeople : FlowControl
 
 		UIControl_FewPeople.Instance.ShowCenterTimerPanel(_duration);
 
-		HandObjectControl_FewPeople.Instance.OnStartRound(_userList);
+		HandObjectControl_FewPeople.Instance.OnStartRound(_userList, _duration);
 	}
 
 	void OnEndRound(JSONObject data)
@@ -138,7 +138,7 @@ public class FlowControl_FewPeople : FlowControl
 			_duration = 10f;
 
 		// 내 유저정보를 찾아서, 결과를 출력해줌.
-		for (int i = 0; i < _userList.Count; i++)
+		/*for (int i = 0; i < _userList.Count; i++)
 		{
 			if (_userList[i].IsMe)
 			{
@@ -149,7 +149,7 @@ public class FlowControl_FewPeople : FlowControl
 				}
 				break;
 			}
-		}
+		}*/
 
 		HandType _frontHand = HandType.empty;
 		string _hand = !data.ContainsKey("currentAdminHand") ? null : data.GetString("currentAdminHand");
@@ -270,21 +270,21 @@ public class FlowControl_FewPeople : FlowControl
     {
 		SelectHand(HandType.rock);
 
-		HandObjectControl_FewPeople.Instance.SelectMyHand(HandType.rock);
+		//HandObjectControl_FewPeople.Instance.SelectMyHand(HandType.rock);
 	}
 
 	public void OnSelectPaper()
 	{
 		SelectHand(HandType.paper);
 
-		HandObjectControl_FewPeople.Instance.SelectMyHand(HandType.paper);
+		//HandObjectControl_FewPeople.Instance.SelectMyHand(HandType.paper);
 	}
 
 	public void OnSelectScissors()
 	{
 		SelectHand(HandType.scissors);
 
-		HandObjectControl_FewPeople.Instance.SelectMyHand(HandType.scissors);
+		//HandObjectControl_FewPeople.Instance.SelectMyHand(HandType.scissors);
 	}
 
 	void SelectHand(HandType handType)
@@ -293,6 +293,6 @@ public class FlowControl_FewPeople : FlowControl
 		_data.Add("hand", handType.ToString());
 
 		SocketControl_FewPeople.Instance.SendData("setHand", _data);
-		HandObjectControl_FewPeople.Instance.SelectMyHand(handType);
+		//HandObjectControl_FewPeople.Instance.SelectMyHand(handType);
 	}
 }

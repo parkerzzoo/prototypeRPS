@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class HandObject_FewPeople : MonoBehaviour
+public class Hand_FewPeople : MonoBehaviour
 {
     public enum HandManyPeopleState { WaitingPlayer, Win, Lose, LoseWaiting, Ready }
     public enum ResultType { Win, Lose, Death, Alive }
@@ -15,17 +15,13 @@ public class HandObject_FewPeople : MonoBehaviour
     public HandManyPeopleState CurState { get { return curState; } }
     public ResultType CurResult { get { return curResult; } }
 
-    Vector3 contentFirstPos;
+    [SerializeField] private Transform chipCreatePos;
+    [SerializeField] private Transform chipGivePos;
+    [SerializeField] private Animator animator;
+    [SerializeField] private HandUI_FewPeople handUI;
+
     [SerializeField] private GameObject content;
-    [SerializeField] private GameObject winObject;
-    [SerializeField] private GameObject loseObject;
     [SerializeField] private Image handImage;
-
-    [SerializeField] private Sprite rockSprite;
-    [SerializeField] private Sprite paperSprite;
-    [SerializeField] private Sprite scissorsSprite;
-
-    [SerializeField] private TMPro.TextMeshProUGUI nameText;
 
     private Coroutine randomCor = null;
     private HandType showHandType = HandType.rock;
@@ -34,12 +30,6 @@ public class HandObject_FewPeople : MonoBehaviour
     public bool Dead { get { return curState == HandManyPeopleState.LoseWaiting; } }
     private bool ExistUser { get { return userData != null; } }
 
-    private void Start()
-    {
-        if(content != null)
-            contentFirstPos = content.transform.position;
-    }
-
     public void OnUserListChange(UserData userData)
     {
         this.userData = userData;
@@ -47,24 +37,38 @@ public class HandObject_FewPeople : MonoBehaviour
         // 유저가 없다면, waiting 활성화.
         if (!ExistUser)
         {
+            SetName(null);
             SetState(HandManyPeopleState.WaitingPlayer);
             return;
         }
-        
+
         SetState(HandManyPeopleState.Ready);
         SetName(userData.nickname);
-        SetHand(userData.handType);
+        SetHand(userData.handType, false);
     }
 
     public void OnStartGame(UserData userData)
     {
-
+        if (userData != null && userData.isAlive)
+            Invoke("PlayBettingAni", Random.Range(0f, 0.1f));
     }
 
-    public void OnStartRound(UserData userData)
+    void PlayBettingAni()
+    {
+        animator.SetTrigger("bettingTrigger");
+    }
+
+    public void OnStartRound(UserData userData, float duration)
     {
         if (!ExistUser)
             return;
+
+        if (userData.isAlive)
+        {
+            float _readyClipTime = GetAnimLength(animator, "HandObject_FewPeople_Ready");
+            animator.speed = _readyClipTime / duration;
+            animator.SetTrigger("readyTrigger");
+        }
 
         SetState(userData.isAlive ? HandManyPeopleState.Ready : HandManyPeopleState.LoseWaiting);
     }
@@ -74,8 +78,8 @@ public class HandObject_FewPeople : MonoBehaviour
         if (userData == null)
             return;
 
-        SetHand(userData.handType);
-        //SetState(userData.isAlive ? HandManyPeopleState.Win : HandManyPeopleState.Lose);
+        SetHand(userData.handType, userData.isAlive);
+        SetState(userData.isAlive ? HandManyPeopleState.Win : HandManyPeopleState.Lose);
     }
 
     public void ShowLoser(UserData userData)
@@ -86,6 +90,11 @@ public class HandObject_FewPeople : MonoBehaviour
 
     public void OnEndGame(UserData userData)
     {
+        if (userData != null && userData.isAlive)
+        {
+            ChipCreateControl.Instance.GiveChip(chipGivePos.position);
+        }
+
         SetState(HandManyPeopleState.Ready);
     }
 
@@ -99,7 +108,7 @@ public class HandObject_FewPeople : MonoBehaviour
 
         curResult = ResultType.Alive;
         curState = HandManyPeopleState.Ready;
-        PlayRandom();
+        //PlayRandom();
         SetState(HandManyPeopleState.Ready);
     }
 
@@ -123,7 +132,7 @@ public class HandObject_FewPeople : MonoBehaviour
         SetHand(userData.handType);
     }
 
-    public virtual void SetHand(HandType handType)
+    public virtual void SetHand(HandType handType, bool playAni = true)
     {
         if (userData == null)
             return;
@@ -131,18 +140,20 @@ public class HandObject_FewPeople : MonoBehaviour
         userData.SetHandType(handType);
 
         // 패배후 대기중이라면, 랜덤 재생 하지 않기.
-        if (handType == HandType.empty && CurState != HandManyPeopleState.LoseWaiting)
+        /*if (handType == HandType.empty && CurState != HandManyPeopleState.LoseWaiting)
             PlayRandom();
-        else if(CurState != HandManyPeopleState.LoseWaiting)
-            StopRandom();
-        UpdateFingerObject(handType);
+        else if (CurState != HandManyPeopleState.LoseWaiting)
+            StopRandom();*/
+
+        if(playAni)
+            PlaySetHandAni(handType);
     }
 
-    public void PlayRandom()
+    /*public void PlayRandom()
     {
         if (randomCor != null)
             return;
-        randomCor = StartCoroutine(RandomCor());
+        //randomCor = StartCoroutine(RandomCor());
     }
 
     protected void StopRandom()
@@ -167,21 +178,33 @@ public class HandObject_FewPeople : MonoBehaviour
             UpdateFingerObject(showHandType);
             yield return _wait;
         }
-    }
+    }*/
 
-    protected void UpdateFingerObject(HandType handType)
+    protected void PlaySetHandAni(HandType handType)
     {
         switch (handType)
         {
-            case HandType.rock: handImage.sprite = rockSprite; break;
-            case HandType.paper: handImage.sprite = paperSprite; break;
-            case HandType.scissors: handImage.sprite = scissorsSprite; break;
+            case HandType.rock: animator.SetTrigger("rockTrigger"); break;
+            case HandType.paper: animator.SetTrigger("paperTrigger"); break;
+            case HandType.scissors: animator.SetTrigger("scissorsTrigger"); break;
         }
     }
 
+    /*protected void UpdateFingerObject(HandType handType)
+    {
+        switch (handType)
+        {
+            case HandType.rock: animator.SetTrigger("rockTrigger"); break;
+            case HandType.paper: animator.SetTrigger("paperTrigger"); break;
+            case HandType.scissors: animator.SetTrigger("scissorsTrigger"); break;
+        }
+    }*/
+
     void SetName(string name)
     {
-        nameText.text = name;
+        handUI.ControlActiveNameText(!string.IsNullOrEmpty(name));
+        //nameText.text = name;
+        handUI.SetName(name);
     }
 
     void SetState(HandManyPeopleState state)
@@ -191,16 +214,23 @@ public class HandObject_FewPeople : MonoBehaviour
 
         curState = state;
 
-        content.SetActive(state != HandManyPeopleState.WaitingPlayer);
-        winObject.SetActive(false);
-        loseObject.SetActive(false);
+        bool _curActive = content.activeSelf;
+        bool _nextActive = state != HandManyPeopleState.WaitingPlayer;
+        if (!_curActive && _nextActive)
+            animator.SetBool("appearTrigger", true);
+        else if (_curActive && !_nextActive)
+            animator.SetBool("disappearTrigger", false);
+
+        content.SetActive(_nextActive);
+        /////winObject.SetActive(false);
+        /////loseObject.SetActive(false);
         if (state == HandManyPeopleState.Win && state != HandManyPeopleState.LoseWaiting)
             SetResult(ResultType.Win);
         else if (state == HandManyPeopleState.Lose && state != HandManyPeopleState.LoseWaiting)
             SetResult(ResultType.Lose);
 
         bool isDeath = state == HandManyPeopleState.LoseWaiting;
-        if(isDeath)
+        if (isDeath)
         {
             handImage.DOFade(0.2f, 0f);
         }
@@ -225,13 +255,15 @@ public class HandObject_FewPeople : MonoBehaviour
         else if (resultType == ResultType.Lose)
             curResult = ResultType.Death;
 
-        winObject.SetActive(resultType == ResultType.Win);
-        loseObject.SetActive(resultType == ResultType.Lose);
+        /////winObject.SetActive(resultType == ResultType.Win);
+        /////loseObject.SetActive(resultType == ResultType.Lose);
+        if (resultType == ResultType.Win)
+            handUI.ShowWinPanel();
 
-        if(resultType == ResultType.Lose)
+        if (resultType == ResultType.Lose)
         {
             content.transform.DOKill();
-            content.transform.DOShakePosition(0.4f, 15f, 30, 200f);
+            content.transform.DOShakePosition(0.1f, 2f, 3, 200f);
         }
 
         yield return new WaitForSeconds(2f);
@@ -241,5 +273,37 @@ public class HandObject_FewPeople : MonoBehaviour
             SetState(HandManyPeopleState.Ready);
         else if (curResult == ResultType.Death)
             SetState(HandManyPeopleState.LoseWaiting);
+    }
+
+    public void CreateChip()
+    {
+        ChipCreateControl.Instance.CreateChip(chipCreatePos.position);
+    }
+
+    private float GetAnimLength(Animator animator, string animName)
+    {
+        float time = 0;
+        RuntimeAnimatorController ac = animator.runtimeAnimatorController;
+
+        for (int i = 0; i < ac.animationClips.Length; i++)
+        {
+            if (ac.animationClips[i].name == animName)
+            {
+                time = ac.animationClips[i].length;
+            }
+        }
+
+        return time;
+    }
+
+    public void InitAnimatorSpeed()
+    {
+        animator.speed = 1f;
+    }
+
+    [ContextMenu("Betting")]
+    public void PlayBetting()
+    {
+        animator.SetTrigger("bettingTrigger");
     }
 }

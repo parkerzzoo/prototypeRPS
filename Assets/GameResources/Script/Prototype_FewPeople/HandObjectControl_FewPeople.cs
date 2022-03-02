@@ -5,13 +5,13 @@ using System.Linq;
 
 public class HandObjectControl_FewPeople : Singletone<HandObjectControl_FewPeople>
 {
-    [SerializeField] private HandObject_ManyPeople[] handObjectList;
-    [SerializeField] private HandObject_ManyPeople myHandObject;
+    [SerializeField] private Hand_FewPeople[] handObjectList;
+    [SerializeField] private Hand_FewPeople myHandObject;
     //[SerializeField] private HandObject_ManyPeople frontHandObject;
 
-    private Dictionary<int, HandObject_ManyPeople> indexHandPair = new Dictionary<int, HandObject_ManyPeople>();
+    private Dictionary<int, Hand_FewPeople> indexHandPair = new Dictionary<int, Hand_FewPeople>();
 
-    public HandObject_ManyPeople MyHandObject { get { return myHandObject; } }
+    public Hand_FewPeople MyHandObject { get { return myHandObject; } }
 
     public void OnUserListChange(List<UserData> userList)
     {
@@ -31,11 +31,11 @@ public class HandObjectControl_FewPeople : Singletone<HandObjectControl_FewPeopl
         //frontHandObject.PlayRandom();
     }
 
-    public void OnStartRound(List<UserData> userList)
+    public void OnStartRound(List<UserData> userList, float duration)
     {
         var _sortedList = SortUserList(userList);
         for (int i = 0; i < handObjectList.Length; i++)
-            handObjectList[i].OnStartRound(_sortedList[i]);
+            handObjectList[i].OnStartRound(_sortedList[i], duration);
 
         //frontHandObject.PlayRandom();
     }
@@ -50,7 +50,7 @@ public class HandObjectControl_FewPeople : Singletone<HandObjectControl_FewPeopl
 
         int _loserCount = 0;
         for (int i = 0; i < _sortedList.Count; i++)
-            if (_sortedList[i] != null && !_sortedList[i].isAlive && handObjectList[i].CurState != HandObject_ManyPeople.HandManyPeopleState.LoseWaiting)
+            if (_sortedList[i] != null && !_sortedList[i].isAlive && handObjectList[i].CurState != Hand_FewPeople.HandManyPeopleState.LoseWaiting)
                 _loserCount++;
 
         StartCoroutine(ShowLoserCor(_sortedList, duration, _loserCount));
@@ -64,7 +64,7 @@ public class HandObjectControl_FewPeople : Singletone<HandObjectControl_FewPeopl
 
         for (int i = 0; i < handObjectList.Length; i++)
         {
-            if(userList[i] != null && !userList[i].isAlive && handObjectList[i].CurState != HandObject_ManyPeople.HandManyPeopleState.LoseWaiting)
+            if(userList[i] != null && !userList[i].isAlive && handObjectList[i].CurState != Hand_FewPeople.HandManyPeopleState.LoseWaiting)
             {
                 handObjectList[i].ShowLoser(userList[i]);
                 yield return new WaitForSeconds(0f);
@@ -119,7 +119,7 @@ public class HandObjectControl_FewPeople : Singletone<HandObjectControl_FewPeopl
         if (myHandObject == null)
             return;
 
-        myHandObject.SetHand(handType);
+        //myHandObject.SetHand(handType);
     }
 
     public void AllReset()
@@ -127,7 +127,7 @@ public class HandObjectControl_FewPeople : Singletone<HandObjectControl_FewPeopl
         for (int i = 0; i < handObjectList.Length; i++)
         {
             //handObjectList[i].PlayRandom();
-            handObjectList[i].SetHand(HandType.empty);
+            //handObjectList[i].SetHand(HandType.empty);
         }
     }
 

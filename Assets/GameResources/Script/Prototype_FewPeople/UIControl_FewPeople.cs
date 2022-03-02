@@ -29,6 +29,7 @@ public class UIControl_FewPeople : Singletone<UIControl_FewPeople>
 
 	private void Start()
 	{
+		DeselectAllHand(true);
 		InactiveFrontHandSpeak(true);
 		connectErrorPanel.SetActive(false);
 	}
@@ -55,10 +56,56 @@ public class UIControl_FewPeople : Singletone<UIControl_FewPeople>
 		//chipCountText.text = "내 칩: " + count;
 	}
 
+	public void OnSelectRock()
+    {
+		SelectHand(HandType.rock);
+	}
+
+	public void OnSelectPaper()
+	{
+		SelectHand(HandType.paper);
+	}
+
+	public void OnSelectScissors()
+	{
+		SelectHand(HandType.scissors);
+	}
+
+	void SelectHand(HandType handType)
+    {
+		DeselectAllHand();
+
+		switch (handType)
+        {
+			case HandType.rock:
+                {
+					rockButtonTrans.DOKill();
+					rockButtonTrans.DOScale(1.2f, 0.1f).SetEase(Ease.OutBack);
+				}
+				break;
+			case HandType.paper:
+				{
+					paperButtonTrans.DOKill();
+					paperButtonTrans.DOScale(1.2f, 0.1f).SetEase(Ease.OutBack);
+				}
+				break;
+			case HandType.scissors:
+				{
+					scissorsButtonTrans.DOKill();
+					scissorsButtonTrans.DOScale(1.2f, 0.1f).SetEase(Ease.OutBack);
+				}
+				break;
+		}
+    }
+
 	void DeselectAllHand(bool immediate = false)
     {
 		if(immediate)
         {
+			rockButtonTrans.DOKill();
+			paperButtonTrans.DOKill();
+			scissorsButtonTrans.DOKill();
+
 			rockButtonTrans.transform.localScale = Vector3.one;
 			paperButtonTrans.transform.localScale = Vector3.one;
 			scissorsButtonTrans.transform.localScale = Vector3.one;
