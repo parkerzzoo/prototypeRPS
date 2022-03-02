@@ -36,7 +36,6 @@ public class HandUI_FewPeople : MonoBehaviour
 
     public void ShowWinPanel()
     {
-        Debug.Log(123);
         if (winShowCor != null)
             StopCoroutine(winShowCor);
 
@@ -45,6 +44,8 @@ public class HandUI_FewPeople : MonoBehaviour
 
     IEnumerator ShowWinPanelCor()
     {
+        yield return new WaitForSeconds(0.5f);
+
         winImage.gameObject.SetActive(true);
         winImage.transform.DOKill();
         winImage.transform.localPosition = winBeforePos.localPosition;

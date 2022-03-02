@@ -6,14 +6,11 @@ using DG.Tweening;
 
 public class Hand_FewPeople : MonoBehaviour
 {
-    public enum HandManyPeopleState { WaitingPlayer, Win, Lose, LoseWaiting, Ready }
-    public enum ResultType { Win, Lose, Death, Alive }
+    public enum HandManyPeopleState { Empty, WaitingPlayer, Win, Lose, LoseWaiting, Ready }
 
-    private HandManyPeopleState curState = HandManyPeopleState.WaitingPlayer;
-    private ResultType curResult = ResultType.Alive;
+    private HandManyPeopleState curState = HandManyPeopleState.Empty;
 
     public HandManyPeopleState CurState { get { return curState; } }
-    public ResultType CurResult { get { return curResult; } }
 
     [SerializeField] private Transform chipCreatePos;
     [SerializeField] private Transform chipGivePos;
@@ -23,12 +20,17 @@ public class Hand_FewPeople : MonoBehaviour
     [SerializeField] private GameObject content;
     [SerializeField] private Image handImage;
 
-    private Coroutine randomCor = null;
-    private HandType showHandType = HandType.rock;
+    [SerializeField] private Transform chipCreateRange_LeftBottom;
+    [SerializeField] private Transform chipCreateRange_RightTop;
 
     public UserData userData = null;
     public bool Dead { get { return curState == HandManyPeopleState.LoseWaiting; } }
     private bool ExistUser { get { return userData != null; } }
+
+    private void Start()
+    {
+        //SetState(HandManyPeopleState.WaitingPlayer);
+    }
 
     public void OnUserListChange(UserData userData)
     {
@@ -78,8 +80,8 @@ public class Hand_FewPeople : MonoBehaviour
         if (userData == null)
             return;
 
-        SetHand(userData.handType, userData.isAlive);
-        SetState(userData.isAlive ? HandManyPeopleState.Win : HandManyPeopleState.Lose);
+        SetHand(userData.handType, curState != HandManyPeopleState.LoseWaiting);
+        SetResult(userData.currentResult);
     }
 
     public void ShowLoser(UserData userData)
@@ -92,10 +94,8 @@ public class Hand_FewPeople : MonoBehaviour
     {
         if (userData != null && userData.isAlive)
         {
-            ChipCreateControl.Instance.GiveChip(chipGivePos.position);
+            animator.SetTrigger("hitTableTrigger");
         }
-
-        SetState(HandManyPeopleState.Ready);
     }
 
     public void OnResetGame(UserData userData)
@@ -106,9 +106,8 @@ public class Hand_FewPeople : MonoBehaviour
             return;
         }
 
-        curResult = ResultType.Alive;
+        animator.SetBool("loseWaiting", false);
         curState = HandManyPeopleState.Ready;
-        //PlayRandom();
         SetState(HandManyPeopleState.Ready);
     }
 
@@ -139,46 +138,9 @@ public class Hand_FewPeople : MonoBehaviour
 
         userData.SetHandType(handType);
 
-        // 패배후 대기중이라면, 랜덤 재생 하지 않기.
-        /*if (handType == HandType.empty && CurState != HandManyPeopleState.LoseWaiting)
-            PlayRandom();
-        else if (CurState != HandManyPeopleState.LoseWaiting)
-            StopRandom();*/
-
         if(playAni)
             PlaySetHandAni(handType);
     }
-
-    /*public void PlayRandom()
-    {
-        if (randomCor != null)
-            return;
-        //randomCor = StartCoroutine(RandomCor());
-    }
-
-    protected void StopRandom()
-    {
-        if (randomCor != null)
-            StopCoroutine(randomCor);
-        randomCor = null;
-    }
-
-    IEnumerator RandomCor()
-    {
-        var _wait = new WaitForSeconds(0.1f);
-        while (true)
-        {
-            switch (showHandType)
-            {
-                case HandType.rock: showHandType = HandType.paper; break;
-                case HandType.paper: showHandType = HandType.scissors; break;
-                case HandType.scissors: showHandType = HandType.rock; break;
-            }
-
-            UpdateFingerObject(showHandType);
-            yield return _wait;
-        }
-    }*/
 
     protected void PlaySetHandAni(HandType handType)
     {
@@ -190,44 +152,28 @@ public class Hand_FewPeople : MonoBehaviour
         }
     }
 
-    /*protected void UpdateFingerObject(HandType handType)
-    {
-        switch (handType)
-        {
-            case HandType.rock: animator.SetTrigger("rockTrigger"); break;
-            case HandType.paper: animator.SetTrigger("paperTrigger"); break;
-            case HandType.scissors: animator.SetTrigger("scissorsTrigger"); break;
-        }
-    }*/
-
     void SetName(string name)
     {
         handUI.ControlActiveNameText(!string.IsNullOrEmpty(name));
-        //nameText.text = name;
         handUI.SetName(name);
     }
 
     void SetState(HandManyPeopleState state)
     {
-        if (curState == HandManyPeopleState.LoseWaiting)
-            return;
-
         curState = state;
 
-        bool _curActive = content.activeSelf;
-        bool _nextActive = state != HandManyPeopleState.WaitingPlayer;
-        if (!_curActive && _nextActive)
-            animator.SetBool("appearTrigger", true);
-        else if (_curActive && !_nextActive)
-            animator.SetBool("disappearTrigger", false);
+        bool _activeBool = animator.GetBool("activeBool");
 
-        content.SetActive(_nextActive);
-        /////winObject.SetActive(false);
-        /////loseObject.SetActive(false);
-        if (state == HandManyPeopleState.Win && state != HandManyPeopleState.LoseWaiting)
-            SetResult(ResultType.Win);
-        else if (state == HandManyPeopleState.Lose && state != HandManyPeopleState.LoseWaiting)
-            SetResult(ResultType.Lose);
+        if (curState == HandManyPeopleState.Ready && !_activeBool)
+        {
+            animator.SetBool("activeBool", true);
+            animator.SetTrigger("appearTrigger");
+        }
+        else if (curState == HandManyPeopleState.WaitingPlayer && _activeBool)
+        {
+            animator.SetBool("activeBool", false);
+            animator.SetTrigger("disappearTrigger");
+        }
 
         bool isDeath = state == HandManyPeopleState.LoseWaiting;
         if (isDeath)
@@ -247,37 +193,22 @@ public class Hand_FewPeople : MonoBehaviour
 
     IEnumerator SetResultCor(ResultType resultType)
     {
-        if (curResult == ResultType.Death)
+        if(CurState == HandManyPeopleState.LoseWaiting)
             yield break;
 
-        if (resultType == ResultType.Win)
-            curResult = ResultType.Alive;
-        else if (resultType == ResultType.Lose)
-            curResult = ResultType.Death;
-
-        /////winObject.SetActive(resultType == ResultType.Win);
-        /////loseObject.SetActive(resultType == ResultType.Lose);
-        if (resultType == ResultType.Win)
-            handUI.ShowWinPanel();
-
-        if (resultType == ResultType.Lose)
+        else if (resultType == ResultType.lose)
         {
-            content.transform.DOKill();
-            content.transform.DOShakePosition(0.1f, 2f, 3, 200f);
+            animator.SetBool("loseWaiting", true);
         }
-
-        yield return new WaitForSeconds(2f);
-
-        yield break;
-        if (curResult == ResultType.Alive)
-            SetState(HandManyPeopleState.Ready);
-        else if (curResult == ResultType.Death)
-            SetState(HandManyPeopleState.LoseWaiting);
+        if (resultType == ResultType.win)
+            handUI.ShowWinPanel();
     }
 
     public void CreateChip()
     {
-        ChipCreateControl.Instance.CreateChip(chipCreatePos.position);
+        Vector3 _aimPos = new Vector3(Random.Range(chipCreateRange_LeftBottom.position.x, chipCreateRange_RightTop.position.x),
+            Random.Range(chipCreateRange_LeftBottom.position.y, chipCreateRange_RightTop.position.y), chipCreateRange_LeftBottom.position.z);
+        ChipCreateControl.Instance.CreateChip(chipCreatePos.position, _aimPos);
     }
 
     private float GetAnimLength(Animator animator, string animName)
@@ -305,5 +236,23 @@ public class Hand_FewPeople : MonoBehaviour
     public void PlayBetting()
     {
         animator.SetTrigger("bettingTrigger");
+    }
+
+    [ContextMenu("PlayHitTable")]
+    public void PlayHitTable()
+    {
+        CameraShaking.Instance.HitTable();
+        ChipCreateControl.Instance.GiveChip(chipGivePos.position);
+    }
+
+    [ContextMenu("HitTable")]
+    public void HitTable()
+    {
+        animator.SetTrigger("hitTableTrigger");
+    }
+
+    public void InactvieContent()
+    {
+        //content.SetActive(false);
     }
 }

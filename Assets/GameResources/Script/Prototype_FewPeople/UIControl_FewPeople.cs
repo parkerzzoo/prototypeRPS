@@ -27,11 +27,18 @@ public class UIControl_FewPeople : Singletone<UIControl_FewPeople>
 
 	public Image coverImage;
 
+	public GameObject focusEffectImage;
+
 	private void Start()
 	{
 		DeselectAllHand(true);
 		InactiveFrontHandSpeak(true);
 		connectErrorPanel.SetActive(false);
+	}
+
+	public void ControlActiveFocusEffect(bool isAcitve)
+    {
+		focusEffectImage.SetActive(isAcitve);
 	}
 
 	public void FadeOutCoverImage()

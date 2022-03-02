@@ -38,8 +38,8 @@ public class Show_CenterTimerPanel : MonoBehaviour
 			yield return new WaitForSeconds(1f);
 			timerObject.transform.DOPunchScale(Vector3.one * 0.2f, 0.1f, 1);
 		}
-		timerText.text = "0";
-		yield return new WaitForSeconds(0.5f);
+		//timerText.text = "0";
+		//yield return new WaitForSeconds(0.1f);
 		ControlActiveTimer(false);
 	}
 

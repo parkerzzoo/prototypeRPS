@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2585933341998143952
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3601598474292786645}
+  m_Layer: 0
+  m_Name: ChipCreatePos_RightTop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &3601598474292786645
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2585933341998143952}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.05, y: 9.22, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_Children: []
+  m_Father: {fileID: 4382834734961076875}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4382834734097924598
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,7 +61,7 @@ Transform:
   - {fileID: 4382834735376159595}
   - {fileID: 7963667489753035888}
   m_Father: {fileID: 4382834734961076875}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4382834734097924596
 SpriteRenderer:
@@ -153,13 +183,9 @@ MonoBehaviour:
   animator: {fileID: 4382834734736426907}
   handUI: {fileID: 0}
   content: {fileID: 4382834734961076874}
-  winObject: {fileID: 0}
-  loseObject: {fileID: 0}
   handImage: {fileID: 0}
-  rockSprite: {fileID: 0}
-  paperSprite: {fileID: 0}
-  scissorsSprite: {fileID: 0}
-  nameText: {fileID: 0}
+  chipCreateRange_LeftBottom: {fileID: 2290953992312442791}
+  chipCreateRange_RightTop: {fileID: 3601598474292786645}
 --- !u!1 &4382834734961076874
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,6 +213,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -10, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
+  - {fileID: 2290953992312442791}
+  - {fileID: 3601598474292786645}
   - {fileID: 4382834734097924599}
   m_Father: {fileID: 4382834734736426909}
   m_RootOrder: 0
@@ -250,4 +278,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4382834734097924599}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7380053462655417436
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2290953992312442791}
+  m_Layer: 0
+  m_Name: ChipCreatePos_LeftBottom
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2290953992312442791
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7380053462655417436}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.905, y: 8.015, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_Children: []
+  m_Father: {fileID: 4382834734961076875}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -122,14 +122,31 @@ public class FlowControl_FewPeople : FlowControl
 				break;
 			}
 		}
+		StartCoroutine(OnStartRoundCor(_userList, _duration));
+		//UIControl_FewPeople.Instance.ShowCenterTimerPanel(_duration);
+		//HandObjectControl_FewPeople.Instance.OnStartRound(_userList, _duration);
+	}
 
-		UIControl_FewPeople.Instance.ShowCenterTimerPanel(_duration);
-
-		HandObjectControl_FewPeople.Instance.OnStartRound(_userList, _duration);
+	IEnumerator OnStartRoundCor(List<UserData> userList, float duration)
+    {
+		if(duration > 3f)
+        {
+			float _beforeTimerTime = duration - 3f;
+			UIControl_FewPeople.Instance.ShowCenterTextPanel("손을 선택해주세요!", 0f, _beforeTimerTime);
+			yield return new WaitForSeconds(_beforeTimerTime);
+		}
+		HandObjectControl_FewPeople.Instance.OnStartRound(userList, 3.5f);
+		UIControl_FewPeople.Instance.ShowCenterTextPanel("3", 0f, 1f);
+		yield return new WaitForSeconds(1f);
+		UIControl_FewPeople.Instance.ShowCenterTextPanel("2", 0f, 1f);
+		yield return new WaitForSeconds(1f);
+		UIControl_FewPeople.Instance.ShowCenterTextPanel("1", 0f, 1f);
+		yield return new WaitForSeconds(1f);
 	}
 
 	void OnEndRound(JSONObject data)
 	{
+		CameraShaking.Instance.OnEndRound();
 		JSONArray _userDatas = data.GetArray("users");
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
 
@@ -195,7 +212,7 @@ public class FlowControl_FewPeople : FlowControl
 
 		if (string.IsNullOrEmpty(_winnerName))
 			_winnerName = "없음";
-		UIControl_FewPeople.Instance.ShowCenterTextPanel("우승자: " + _winnerName, 0f, 3f);
+		//UIControl_FewPeople.Instance.ShowCenterTextPanel("우승자: " + _winnerName, 0f, 3f);
 
 		HandObjectControl_FewPeople.Instance.OnEndGame(_userList);
 	}
