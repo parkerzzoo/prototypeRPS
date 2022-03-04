@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class HandObjectControl_ManyPeople : Singletone<HandObjectControl_ManyPeople>
+public class HandObjectControl_Game2 : HandObjectControl
 {
-    [SerializeField] private HandObject_ManyPeople[] handObjectList;
-    [SerializeField] private HandObject_ManyPeople myHandObject;
-    [SerializeField] private HandObject_ManyPeople frontHandObject;
+    [SerializeField] private HandObject_Game2[] handObjectList;
+    [SerializeField] private HandObject_Game2 myHandObject;
 
-    private Dictionary<int, HandObject_ManyPeople> indexHandPair = new Dictionary<int, HandObject_ManyPeople>();
+    public HandObject_Game2 MyHandObject { get { return myHandObject; } }
 
     public void OnUserListChange(List<UserData> userList)
     {
         var _sortedList = SortUserList(userList);
         for (int i = 0; i < handObjectList.Length; i++)
             handObjectList[i].OnUserListChange(_sortedList[i]);
-
-        frontHandObject.PlayRandom();
     }
 
     public void OnStartGame(List<UserData> userList)
@@ -25,54 +22,20 @@ public class HandObjectControl_ManyPeople : Singletone<HandObjectControl_ManyPeo
         var _sortedList = SortUserList(userList);
         for (int i = 0; i < handObjectList.Length; i++)
             handObjectList[i].OnStartGame(_sortedList[i]);
-
-        frontHandObject.PlayRandom();
     }
 
-    public void OnStartRound(List<UserData> userList)
+    public void OnStartRound(List<UserData> userList, float duration)
     {
         var _sortedList = SortUserList(userList);
         for (int i = 0; i < handObjectList.Length; i++)
-            handObjectList[i].OnStartRound(_sortedList[i]);
-
-        frontHandObject.PlayRandom();
+            handObjectList[i].OnStartRound(_sortedList[i], duration);
     }
 
     public void OnEndRound(List<UserData> userList, HandType frontHandType, float duration)
     {
-        frontHandObject.SetHand(frontHandType);
-
         var _sortedList = SortUserList(userList);
         for (int i = 0; i < handObjectList.Length; i++)
             handObjectList[i].OnEndRound(_sortedList[i]);
-
-        int _loserCount = 0;
-        for (int i = 0; i < _sortedList.Count; i++)
-            if (_sortedList[i] != null && !_sortedList[i].isAlive && handObjectList[i].CurState != HandObject_ManyPeople.HandManyPeopleState.LoseWaiting)
-                _loserCount++;
-
-        StartCoroutine(ShowLoserCor(_sortedList, duration, _loserCount));
-    }
-
-    IEnumerator ShowLoserCor(List<UserData> userList, float duration, int loserCount)
-    {
-        float _delay = (duration - 2.5f) / (float)loserCount;
-
-        int _aliver = 0;
-
-        for (int i = 0; i < handObjectList.Length; i++)
-        {
-            if(userList[i] != null && !userList[i].isAlive && handObjectList[i].CurState != HandObject_ManyPeople.HandManyPeopleState.LoseWaiting)
-            {
-                handObjectList[i].ShowLoser(userList[i]);
-                yield return new WaitForSeconds(_delay);
-            }
-            else if(userList[i] != null && userList[i].isAlive)
-            {
-                _aliver++;
-            }
-        }
-        UIControl_ManyPeople.Instance.ActiveFrontHandSpeak("생존자 " + _aliver + "명 입니다.");
     }
 
     public void OnEndGame(List<UserData> userList)
@@ -80,22 +43,17 @@ public class HandObjectControl_ManyPeople : Singletone<HandObjectControl_ManyPeo
         var _sortedList = SortUserList(userList);
         for (int i = 0; i < handObjectList.Length; i++)
             handObjectList[i].OnEndGame(_sortedList[i]);
-
-        frontHandObject.PlayRandom();
     }
 
     public void OnResetRound(List<UserData> userList)
     {
     }
 
-
     public void OnResetGame(List<UserData> userList)
     {
         var _sortedList = SortUserList(userList);
         for (int i = 0; i < handObjectList.Length; i++)
             handObjectList[i].OnResetGame(_sortedList[i]);
-
-        frontHandObject.PlayRandom();
     }
 
     public void OnFrontHandSpeak(List<UserData> userList)
@@ -110,23 +68,6 @@ public class HandObjectControl_ManyPeople : Singletone<HandObjectControl_ManyPeo
         var _sortedList = SortUserList(userList);
         for (int i = 0; i < handObjectList.Length; i++)
             handObjectList[i].OnUserHandChange(_sortedList[i]);
-    }
-
-    public void SelectMyHand(HandType handType)
-    {
-        if (myHandObject == null)
-            return;
-
-        myHandObject.SetHand(handType);
-    }
-
-    public void AllReset()
-    {
-        for (int i = 0; i < handObjectList.Length; i++)
-        {
-            handObjectList[i].PlayRandom();
-            handObjectList[i].SetHand(HandType.empty);
-        }
     }
 
     // 유저리스트 소팅. 자기자신은 0, 이미 존재하는유저는 인덱스 유지.

@@ -368,10 +368,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4382834734736426909}
   - component: {fileID: 4382834734736426907}
-  - component: {fileID: 4382834734736426906}
+  - component: {fileID: 5151557314771822601}
   - component: {fileID: 3644952299687436087}
   m_Layer: 0
-  m_Name: Hand_FewPeople
+  m_Name: HandObject_Game2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -411,7 +411,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4382834734736426906
+--- !u!114 &5151557314771822601
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -420,7 +420,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4382834734736426908}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dcdb9892918e4a5da9c89c969e94046, type: 3}
+  m_Script: {fileID: 11500000, guid: 9066f527ca4da4518904e089da1e5860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bringChipPos: {fileID: 1251676239281960061}

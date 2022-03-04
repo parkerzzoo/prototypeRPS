@@ -8,6 +8,7 @@ public class GameController : Singletone<GameController>
     [SerializeField] protected UIControl uiControl;
     [SerializeField] protected FlowControl flowControl;
     [SerializeField] protected HandObjectControl handObjectControl;
+    [SerializeField] protected SocketControl socketControl;
 
     public UIControl UIControl()
     {
@@ -37,5 +38,15 @@ public class GameController : Singletone<GameController>
     public T HandObjectControl<T>()
     {
         return (T)Convert.ChangeType(handObjectControl, typeof(T));
+    }
+
+    public SocketControl SocketControl()
+    {
+        return socketControl;
+    }
+
+    public T SocketControl<T>()
+    {
+        return (T)Convert.ChangeType(socketControl, typeof(T));
     }
 }

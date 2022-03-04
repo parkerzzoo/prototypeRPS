@@ -7,34 +7,33 @@ using UnityEngine;
 using Boomlagoon.JSON;
 using ParkerLibrary.EventSystem;
 
-public class SocketControl_FewPeople : Singletone<SocketControl_FewPeople>
+public class SocketControl : Singletone<SocketControl>
 {
     [SerializeField] private string address = "";
     [SerializeField] private string namespaceString = "";
     private SocketManager socketManager = null;
-    private Socket targetSocket;
+    protected Socket targetSocket;
 
-    private void Start()
+    public void ConnectSocket()
     {
-        //ConnectSocketIO();
+        Connect();
     }
 
-    public void ConnectWebSocket()
-    {
-        ConnectSocketIO();
-    }
-
-    private void ConnectSocketIO()
+    private void Connect()
     {
         SocketOptions options = new SocketOptions();
         options.AutoConnect = false;
 
         socketManager = new SocketManager(new Uri(address));
+        socketManager.Open();
 
         targetSocket = !string.IsNullOrEmpty(namespaceString) ? socketManager.GetSocket(namespaceString) : socketManager.Socket;
 
-        socketManager.Open();
+        InitEvent();
+    }
 
+    protected virtual void InitEvent()
+    {
         targetSocket.On(SocketIOEventTypes.Connect, OnConnected);
         targetSocket.On(SocketIOEventTypes.Disconnect, OnDisconnected);
 
@@ -55,17 +54,17 @@ public class SocketControl_FewPeople : Singletone<SocketControl_FewPeople>
         targetSocket.On("error", () => ReceiveData("error"));
     }
 
-    private void OnConnected()
+    protected void OnConnected()
     {
         Debug.Log("[Socket.IO] Connected!");
     }
 
-    private void OnDisconnected()
+    protected void OnDisconnected()
     {
         Debug.Log("[Socket.IO] Disconnected!");
     }
 
-    void ReceiveData(string eventName)
+    protected virtual void ReceiveData(string eventName)
     {
         if (string.IsNullOrEmpty(eventName))
             return;
@@ -85,7 +84,7 @@ public class SocketControl_FewPeople : Singletone<SocketControl_FewPeople>
         }
     }
 
-    void ReceiveData(string eventName, string data)
+    protected virtual void ReceiveData(string eventName, string data)
     {
         if (string.IsNullOrEmpty(eventName))
             return;
@@ -94,7 +93,7 @@ public class SocketControl_FewPeople : Singletone<SocketControl_FewPeople>
 
         try
         {
-            JSONObject _json = (data == null)? null: JSONObject.Parse(data);
+            JSONObject _json = (data == null) ? null : JSONObject.Parse(data);
             switch (eventName)
             {
                 case "connected": EventManager.Instance.PostNotification(EVENT_TYPE.WS_CONNECTED, this, _json); break;
@@ -111,7 +110,7 @@ public class SocketControl_FewPeople : Singletone<SocketControl_FewPeople>
                 case "msg": EventManager.Instance.PostNotification(EVENT_TYPE.FEW_PEOPLE_MODE_USER_SPEAK, this, _json); break;
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Debug.Log("[Error] " + e);
         }

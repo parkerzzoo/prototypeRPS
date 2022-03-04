@@ -184,7 +184,7 @@ public class FlowControl_FewPeople : FlowControl
 
     public void OnClickStart()
 	{
-		SocketControl_FewPeople.Instance.ConnectWebSocket();
+		GameController.Instance.SocketControl().ConnectSocket();
 	}
 
 	public void OnSendChat(string content)

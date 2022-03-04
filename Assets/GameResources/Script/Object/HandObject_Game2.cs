@@ -4,12 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class Hand_FewPeople : MonoBehaviour
+public class HandObject_Game2 : MonoBehaviour
 {
-    public enum HandManyPeopleState { Empty, WaitingPlayer, Win, Lose, LoseWaiting, Ready }
+    public enum HandManyPeopleState { Empty, WaitingPlayer, LoseWaiting, Ready }
 
     private HandManyPeopleState curState = HandManyPeopleState.Empty;
-
     public HandManyPeopleState CurState { get { return curState; } }
 
     public Transform bringChipPos;
@@ -25,11 +24,6 @@ public class Hand_FewPeople : MonoBehaviour
     public UserData userData = null;
     public bool Dead { get { return curState == HandManyPeopleState.LoseWaiting; } }
     private bool ExistUser { get { return userData != null; } }
-
-    private void Start()
-    {
-        //SetState(HandManyPeopleState.WaitingPlayer);
-    }
 
     public void OnUserListChange(UserData userData)
     {
@@ -81,12 +75,6 @@ public class Hand_FewPeople : MonoBehaviour
 
         SetHand(userData.handType, curState != HandManyPeopleState.LoseWaiting);
         SetResult(userData.currentResult);
-    }
-
-    public void ShowLoser(UserData userData)
-    {
-        if (!userData.isAlive)
-            SetState(HandManyPeopleState.Lose);
     }
 
     public void OnEndGame(UserData userData)

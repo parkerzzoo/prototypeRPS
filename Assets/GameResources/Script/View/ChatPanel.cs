@@ -40,7 +40,7 @@ public class ChatPanel : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Return))
         {
-            FlowControl_ManyPeople.Instance.OnSendChat(chatInputField.text);
+            GameController.Instance.FlowControl<FlowControl_ManyPeople>().OnSendChat(chatInputField.text);
             chatInputField.ActivateInputField();
             chatInputField.text = "";
         }

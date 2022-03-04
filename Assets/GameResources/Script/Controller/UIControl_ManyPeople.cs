@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 
-public class UIControl_ManyPeople : Singletone<UIControl_ManyPeople>
+public class UIControl_ManyPeople : UIControl
 {
 	public ChatPanel chatPanel;
 	

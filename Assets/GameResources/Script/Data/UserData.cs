@@ -10,8 +10,8 @@ public class UserData
     public HandType handType;
     public bool possiblePlay;
     public bool IsMe { get { return VarList.userId == userId; } }
-    public ResultType[] resultTypes = new ResultType[0];
     public ResultType currentResult;
+    public TeamInfo teamInfo;
     public int point = 0;
 
     public string nickname;
@@ -50,26 +50,6 @@ public class UserData
         
         possiblePlay = data.ContainsKey("possiblePlayer")? data.GetBoolean("possiblePlayer"): true;
 
-        if(data.ContainsKey("roundResult"))
-        {
-            JSONArray _roundResult = data.GetArray("roundResult");
-            resultTypes = new ResultType[_roundResult.Length];
-            for(int i = 0; i < _roundResult.Length; i++)
-            {
-                string _result = _roundResult[i].Str;
-                switch (_result)
-                {
-                    case "win": resultTypes[i] = ResultType.win; break;
-                    case "lose": resultTypes[i] = ResultType.lose; break;
-                    case "draw": resultTypes[i] = ResultType.draw; break;
-                }
-            }
-        }
-        else
-        {
-            resultTypes = new ResultType[0];
-        }
-
         point = data.ContainsKey("point")? (int)data.GetNumber("point"): 0;
 
         index = -1;
@@ -85,6 +65,16 @@ public class UserData
                 case "win": currentResult = ResultType.win; break;
                 case "lose": currentResult = ResultType.lose; break;
                 case "draw": currentResult = ResultType.draw; break;
+            }
+        }
+
+        if (data.ContainsKey("teamInfo"))
+        {
+            string _result = data.GetString("teamInfo");
+            switch (_result)
+            {
+                case "a": teamInfo = TeamInfo.A; break;
+                case "b": teamInfo = TeamInfo.B; break;
             }
         }
     }

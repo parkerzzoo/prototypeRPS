@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public enum HandType { empty = 0, rock = 1, paper = 2, scissors = 3 }
 public enum ResultType { win, lose, draw }
+public enum TeamInfo { A = 0, B }
 public class HandObject : MonoBehaviour
 {
     public Color winColor;

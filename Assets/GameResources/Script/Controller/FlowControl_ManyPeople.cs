@@ -6,7 +6,7 @@ using ParkerLibrary.EventSystem;
 using Boomlagoon.JSON;
 using DG.Tweening;
 
-public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
+public class FlowControl_ManyPeople : FlowControl
 {
 	bool handSelectable = false;
 	[SerializeField] private TMPro.TMP_InputField nameInputField;
@@ -83,7 +83,7 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 		SocketControl_ManyPeople.Instance.SendData("identity", _data);
 		SocketControl_ManyPeople.Instance.SendData("userListChange");
 
-		UIControl_ManyPeople.Instance.FadeOutCoverImage();
+		GameController.Instance.UIControl<UIControl_ManyPeople>().FadeOutCoverImage();
 	}
 
 	void OnUserListChange(JSONObject data)
@@ -91,7 +91,7 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 		JSONArray _userDatas = data.GetArray("users");
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
 
-		HandObjectControl_ManyPeople.Instance.OnUserListChange(_userList);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().OnUserListChange(_userList);
 	}
 
 	void OnStartGame(JSONObject data)
@@ -100,12 +100,12 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 		if (_duration > 2)
 			_duration = 2f;
 
-		UIControl_ManyPeople.Instance.ShowCenterTextPanel("게임 시작", 0f, _duration);
+		GameController.Instance.UIControl<UIControl_ManyPeople>().ShowCenterTextPanel("게임 시작", 0f, _duration);
 
 		JSONArray _userDatas = data.GetArray("users");
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
 
-		HandObjectControl_ManyPeople.Instance.OnStartGame(_userList);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().OnStartGame(_userList);
 	}
 
 	void OnStartRound(JSONObject data)
@@ -126,9 +126,9 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 			}
 		}
 
-		UIControl_ManyPeople.Instance.ShowCenterTimerPanel(_duration);
+		GameController.Instance.UIControl<UIControl_ManyPeople>().ShowCenterTimerPanel(_duration);
 
-		HandObjectControl_ManyPeople.Instance.OnStartRound(_userList);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().OnStartRound(_userList);
 	}
 
 	void OnEndRound(JSONObject data)
@@ -171,7 +171,7 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 			}
 		}
 
-		HandObjectControl_ManyPeople.Instance.OnEndRound(_userList, _frontHand, _duration);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().OnEndRound(_userList, _frontHand, _duration);
 	}
 
 	void OnEndGame(JSONObject data)
@@ -182,7 +182,7 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 		{
 			if (_userList[i].IsMe)
 			{
-				UIControl_ManyPeople.Instance.UpdateChipCountText(_userList[i].point);
+				GameController.Instance.UIControl<UIControl_ManyPeople>().UpdateChipCountText(_userList[i].point);
 				break;
 			}
 		}
@@ -199,9 +199,9 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 
 		if (string.IsNullOrEmpty(_winnerName))
 			_winnerName = "없음";
-		UIControl_ManyPeople.Instance.ShowCenterTextPanel("우승자: " + _winnerName, 0f, 3f);
+		GameController.Instance.UIControl<UIControl_ManyPeople>().ShowCenterTextPanel("우승자: " + _winnerName, 0f, 3f);
 
-		HandObjectControl_ManyPeople.Instance.OnEndGame(_userList);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().OnEndGame(_userList);
 	}
 
 	void OnResetRound(JSONObject data)
@@ -211,7 +211,7 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 		JSONArray _userDatas = data.GetArray("users");
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
 
-		HandObjectControl_ManyPeople.Instance.OnResetRound(_userList);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().OnResetRound(_userList);
 	}
 
 	void OnResetGame(JSONObject data)
@@ -221,21 +221,21 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 		JSONArray _userDatas = data.GetArray("users");
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
 
-		HandObjectControl_ManyPeople.Instance.OnResetGame(_userList);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().OnResetGame(_userList);
 	}
 
 	void OnFrontHandSpeak(JSONObject data)
 	{
 		string _msg = data.GetString("adminMsg");
 
-		UIControl_ManyPeople.Instance.ActiveFrontHandSpeak(_msg);
+		GameController.Instance.UIControl<UIControl_ManyPeople>().ActiveFrontHandSpeak(_msg);
 	}
 
 	void OnUserSpeak(JSONObject data)
 	{
 		string _msg = data.GetString("msg");
 
-		UIControl_ManyPeople.Instance.CreatChatObject(_msg);
+		GameController.Instance.UIControl<UIControl_ManyPeople>().CreatChatObject(_msg);
 	}
 
 	void OnUserHandChange(JSONObject data)
@@ -243,12 +243,12 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 		JSONArray _userDatas = data.GetArray("users");
 		List<UserData> _userList = UserData.ParseUserList(_userDatas);
 
-		HandObjectControl_ManyPeople.Instance.OnUserHandChange(_userList);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().OnUserHandChange(_userList);
 	}
 
 	void OnConnectError()
     {
-		UIControl_ManyPeople.Instance.ActiveConnectErrorPanel();
+		GameController.Instance.UIControl<UIControl_ManyPeople>().ActiveConnectErrorPanel();
 	}
 
 
@@ -256,7 +256,7 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 
 	public void OnClickStart()
 	{
-		SocketControl_ManyPeople.Instance.ConnectWebSocket();
+		SocketControl_ManyPeople.Instance.ConnectSocket();
 	}
 
 	public void OnSendChat(string content)
@@ -291,6 +291,6 @@ public class FlowControl_ManyPeople : Singletone<FlowControl_ManyPeople>
 		_data.Add("hand", handType.ToString());
 
 		SocketControl_ManyPeople.Instance.SendData("setHand", _data);
-		HandObjectControl_ManyPeople.Instance.SelectMyHand(handType);
+		GameController.Instance.HandObjectControl<HandObjectControl_ManyPeople>().SelectMyHand(handType);
 	}
 }

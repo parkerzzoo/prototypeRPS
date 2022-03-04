@@ -17,7 +17,7 @@ public class Chip : MonoBehaviour
     {
         if(collision.CompareTag("HandBringChipCollider"))
         {
-            handFollowTrans = collision.gameObject.GetComponentInParent<Hand_FewPeople>().bringChipPos;
+            handFollowTrans = collision.gameObject.GetComponentInParent<HandObject_FewPeople>().bringChipPos;
         }
     }
 
