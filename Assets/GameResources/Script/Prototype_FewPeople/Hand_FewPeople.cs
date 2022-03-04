@@ -12,6 +12,8 @@ public class Hand_FewPeople : MonoBehaviour
 
     public HandManyPeopleState CurState { get { return curState; } }
 
+    public Transform bringChipPos;
+
     [SerializeField] private Transform chipCreatePos;
     [SerializeField] private Transform chipGivePos;
     [SerializeField] private Animator animator;
@@ -19,9 +21,6 @@ public class Hand_FewPeople : MonoBehaviour
 
     [SerializeField] private GameObject content;
     [SerializeField] private Image handImage;
-
-    [SerializeField] private Transform chipCreateRange_LeftBottom;
-    [SerializeField] private Transform chipCreateRange_RightTop;
 
     public UserData userData = null;
     public bool Dead { get { return curState == HandManyPeopleState.LoseWaiting; } }
@@ -67,7 +66,7 @@ public class Hand_FewPeople : MonoBehaviour
 
         if (userData.isAlive)
         {
-            float _readyClipTime = GetAnimLength(animator, "HandObject_FewPeople_Ready");
+            float _readyClipTime = GetAnimLength(animator, "HandObject_FewPeople_Ready1");
             animator.speed = _readyClipTime / duration;
             animator.SetTrigger("readyTrigger");
         }
@@ -94,7 +93,8 @@ public class Hand_FewPeople : MonoBehaviour
     {
         if (userData != null && userData.isAlive)
         {
-            animator.SetTrigger("hitTableTrigger");
+            animator.SetTrigger("bringChipTrigger");//"hitTableTrigger");
+            ChipCreateControl.Instance.GiveChip();
         }
     }
 
@@ -206,9 +206,7 @@ public class Hand_FewPeople : MonoBehaviour
 
     public void CreateChip()
     {
-        Vector3 _aimPos = new Vector3(Random.Range(chipCreateRange_LeftBottom.position.x, chipCreateRange_RightTop.position.x),
-            Random.Range(chipCreateRange_LeftBottom.position.y, chipCreateRange_RightTop.position.y), chipCreateRange_LeftBottom.position.z);
-        ChipCreateControl.Instance.CreateChip(chipCreatePos.position, _aimPos);
+        ChipCreateControl.Instance.CreateChip(chipCreatePos.position);
     }
 
     private float GetAnimLength(Animator animator, string animName)
@@ -242,7 +240,8 @@ public class Hand_FewPeople : MonoBehaviour
     public void PlayHitTable()
     {
         CameraShaking.Instance.HitTable();
-        ChipCreateControl.Instance.GiveChip(chipGivePos.position);
+        ChipCreateControl.Instance.GiveChip();
+        //ChipCreateControl.Instance.GiveChip(chipGivePos.position);
     }
 
     [ContextMenu("HitTable")]

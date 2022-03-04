@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class HandObjectControl_FewPeople : Singletone<HandObjectControl_FewPeople>
+public class HandObjectControl_FewPeople : HandObjectControl
 {
     [SerializeField] private Hand_FewPeople[] handObjectList;
     [SerializeField] private Hand_FewPeople myHandObject;

@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd714c5e93ae413185f5b088b469b7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextSceneName: InGame_FewPeople
+  nextSceneName: InGame_ManyPeople
   goOnStart: 1
   isAsync: 0
   loadSec: 0

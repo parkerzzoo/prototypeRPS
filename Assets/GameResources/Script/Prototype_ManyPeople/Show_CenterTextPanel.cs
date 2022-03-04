@@ -17,6 +17,7 @@ public class Show_CenterTextPanel : MonoBehaviour
     private void Start()
     {
 		startGamePanel.transform.DOScaleY(0f, 0f);
+		startGameText.DOFade(0f, 0f);
 	}
 
 	public void Show(string content, float delay, float duration)
@@ -29,6 +30,9 @@ public class Show_CenterTextPanel : MonoBehaviour
 
     IEnumerator ShowCenterTextPanelCor(string content, float delay, float duration)
 	{
+		startGameText.DOKill();
+		startGameText.DOFade(0f, 0f);
+
 		startGameText.transform.localPosition = beforePos.localPosition;
 
 		startGameText.text = content;
@@ -39,9 +43,13 @@ public class Show_CenterTextPanel : MonoBehaviour
 
 		yield return new WaitForSeconds(0.05f);
 
+		startGameText.DOFade(1f, 0.1f);
+
 		startGameText.transform.DOLocalMove(showPos.localPosition, 0.2f).SetEase(Ease.OutBack);
 
 		yield return new WaitForSeconds(duration);
+
+		startGameText.DOFade(0f, 0.1f);
 
 		startGameText.transform.DOLocalMove(afterPos.localPosition, 0.2f).SetEase(Ease.InBack);
 

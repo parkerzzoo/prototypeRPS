@@ -51,14 +51,14 @@ public class CameraShaking : Singletone<CameraShaking>
         mainCamera.DOKill();
         mainCamera.DOOrthoSize(focuseCameraSize, time);
 
-        UIControl_FewPeople.Instance.ControlActiveFocusEffect(true);
+        GameController.Instance.UIControl<UIControl_FewPeople>().ControlActiveFocusEffect(true);
 
         yield return new WaitForSeconds(time);
 
         mainCamera.DOKill();
         mainCamera.DOOrthoSize(firstCameraSize, 1f);
 
-        UIControl_FewPeople.Instance.ControlActiveFocusEffect(false);
+        GameController.Instance.UIControl<UIControl_FewPeople>().ControlActiveFocusEffect(false);
     }
 
     void ShakeCamera()

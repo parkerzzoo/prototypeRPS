@@ -10,7 +10,9 @@ using ParkerLibrary.EventSystem;
 public class SocketControl_FewPeople : Singletone<SocketControl_FewPeople>
 {
     [SerializeField] private string address = "";
+    [SerializeField] private string namespaceString = "";
     private SocketManager socketManager = null;
+    private Socket targetSocket;
 
     private void Start()
     {
@@ -28,26 +30,29 @@ public class SocketControl_FewPeople : Singletone<SocketControl_FewPeople>
         options.AutoConnect = false;
 
         socketManager = new SocketManager(new Uri(address));
+
+        targetSocket = !string.IsNullOrEmpty(namespaceString) ? socketManager.GetSocket(namespaceString) : socketManager.Socket;
+
         socketManager.Open();
 
-        socketManager.Socket.On(SocketIOEventTypes.Connect, OnConnected);
-        socketManager.Socket.On(SocketIOEventTypes.Disconnect, OnDisconnected);
+        targetSocket.On(SocketIOEventTypes.Connect, OnConnected);
+        targetSocket.On(SocketIOEventTypes.Disconnect, OnDisconnected);
 
-        socketManager.Socket.On("connected", () => ReceiveData("connected", null));
+        targetSocket.On("connected", () => ReceiveData("connected", null));
 
-        socketManager.Socket.On<string>("userListChange", (data) => ReceiveData("userListChange", data));
-        socketManager.Socket.On<string>("userHandChange", (data) => ReceiveData("userHandChange", data));
+        targetSocket.On<string>("userListChange", (data) => ReceiveData("userListChange", data));
+        targetSocket.On<string>("userHandChange", (data) => ReceiveData("userHandChange", data));
 
-        socketManager.Socket.On<string>("startGame", (data) => ReceiveData("startGame", data));
-        socketManager.Socket.On<string>("endGame", (data) => ReceiveData("endGame", data));
-        socketManager.Socket.On<string>("startRound", (data) => ReceiveData("startRound", data));
-        socketManager.Socket.On<string>("endRound", (data) => ReceiveData("endRound", data));
-        socketManager.Socket.On<string>("resetGame", (data) => ReceiveData("resetGame", data));
-        socketManager.Socket.On<string>("resetRound", (data) => ReceiveData("resetRound", data));
+        targetSocket.On<string>("startGame", (data) => ReceiveData("startGame", data));
+        targetSocket.On<string>("endGame", (data) => ReceiveData("endGame", data));
+        targetSocket.On<string>("startRound", (data) => ReceiveData("startRound", data));
+        targetSocket.On<string>("endRound", (data) => ReceiveData("endRound", data));
+        targetSocket.On<string>("resetGame", (data) => ReceiveData("resetGame", data));
+        targetSocket.On<string>("resetRound", (data) => ReceiveData("resetRound", data));
 
-        socketManager.Socket.On<string>("msg", (data) => ReceiveData("msg", data));
+        targetSocket.On<string>("msg", (data) => ReceiveData("msg", data));
 
-        socketManager.Socket.On("error", () => ReceiveData("error"));
+        targetSocket.On("error", () => ReceiveData("error"));
     }
 
     private void OnConnected()
@@ -114,12 +119,12 @@ public class SocketControl_FewPeople : Singletone<SocketControl_FewPeople>
 
     public void SendData(string eventName)
     {
-        socketManager.Socket.Emit(eventName);
+        targetSocket.Emit(eventName);
     }
 
     public void SendData(string eventName, JSONObject data)
     {
-        socketManager.Socket.Emit(eventName, data.ToString());
+        targetSocket.Emit(eventName, data.ToString());
     }
 
     private void Destory()
