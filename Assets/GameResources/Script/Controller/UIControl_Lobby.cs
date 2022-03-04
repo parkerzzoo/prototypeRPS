@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class UIControl_Lobby : UIControl
 {
-    public void OnClickBasicModeStart()
+    public void OnClickGame1Start()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_BasicMode");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_FewPeople");
     }
 
-    public void OnClickCardModeStart()
+    public void OnClickGame2Start()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_CardMode");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_Game2");
+    }
+
+    public void OnClickGame3Start()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_ManyPeople");
     }
 }

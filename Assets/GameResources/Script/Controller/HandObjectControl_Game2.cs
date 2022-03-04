@@ -74,6 +74,7 @@ public class HandObjectControl_Game2 : HandObjectControl
     List<UserData> SortUserList(List<UserData> userDatas)
     {
         List<UserData> _sortDatas = new List<UserData>();
+        int _handObjectCount = handObjectList.Length;
 
         Dictionary<int, UserData> _userIndex = new Dictionary<int, UserData>();
 
@@ -89,7 +90,7 @@ public class HandObjectControl_Game2 : HandObjectControl
         }
 
         // 이미 있는 손들은 인덱스 그대로 셋팅.
-        for (int i = 1; i < handObjectList.Length; i++)
+        for (int i = 1; i < _handObjectCount; i++)
         {
             if (handObjectList[i].userData == null || handObjectList[i].userData.IsMe)
                 continue;
@@ -102,8 +103,21 @@ public class HandObjectControl_Game2 : HandObjectControl
             }
         }
 
+        // 나와 같은 팀일 경우만 먼저 push.
+        TeamInfo _myTeam = _userIndex[0].teamInfo;
+        for (int i = 1; i < _handObjectCount; i++)
+        {
+            if (userDatas.Count <= 0)
+                break;
+            if (_userIndex.ContainsKey(i) || userDatas[0].teamInfo != _myTeam)
+                continue;
+
+            _userIndex.Add(i, userDatas[0]);
+            userDatas.RemoveAt(0);
+        }
+
         // 나머지는 차례대로 push.
-        for (int i = 1; i < handObjectList.Length; i++)
+        for (int i = 1; i < _handObjectCount; i++)
         {
             if (userDatas.Count <= 0)
                 break;
@@ -115,7 +129,7 @@ public class HandObjectControl_Game2 : HandObjectControl
         }
 
         // 결과값 셋팅.
-        for(int i = 0; i < handObjectList.Length; i++)
+        for(int i = 0; i < _handObjectCount; i++)
         {
             bool _existIndex = _userIndex.ContainsKey(i);
             _sortDatas.Add(_existIndex? _userIndex[i]: null);
