@@ -73,8 +73,8 @@ public class UserData
             string _result = data.GetString("teamInfo");
             switch (_result)
             {
-                case "a": teamInfo = TeamInfo.A; break;
-                case "b": teamInfo = TeamInfo.B; break;
+                case "A": teamInfo = TeamInfo.A; break;
+                case "B": teamInfo = TeamInfo.B; break;
             }
         }
     }

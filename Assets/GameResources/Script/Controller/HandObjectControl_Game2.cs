@@ -5,6 +5,9 @@ using System.Linq;
 
 public class HandObjectControl_Game2 : HandObjectControl
 {
+    [SerializeField] private int playerCount;
+    [SerializeField] private int teamCount;
+
     [SerializeField] private HandObject_Game2[] handObjectList;
     [SerializeField] private HandObject_Game2 myHandObject;
 
@@ -109,7 +112,8 @@ public class HandObjectControl_Game2 : HandObjectControl
         {
             if (userDatas.Count <= 0)
                 break;
-            if (_userIndex.ContainsKey(i) || userDatas[0].teamInfo != _myTeam)
+            bool _sameMyTeam = userDatas[0].teamInfo == _myTeam;
+            if (_userIndex.ContainsKey(i) || !_sameMyTeam)
                 continue;
 
             _userIndex.Add(i, userDatas[0]);
@@ -123,6 +127,10 @@ public class HandObjectControl_Game2 : HandObjectControl
                 break;
             if (_userIndex.ContainsKey(i))
                 continue;
+
+            bool _isSameTeam = userDatas[0].teamInfo == _myTeam;
+
+            if(_isSameTeam)
 
             _userIndex.Add(i, userDatas[0]);
             userDatas.RemoveAt(0);

@@ -6,7 +6,7 @@ public class UIControl_Lobby : UIControl
 {
     public void OnClickGame1Start()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_FewPeople");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_Game1");
     }
 
     public void OnClickGame2Start()
@@ -16,6 +16,6 @@ public class UIControl_Lobby : UIControl
 
     public void OnClickGame3Start()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_ManyPeople");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame_Game3");
     }
 }

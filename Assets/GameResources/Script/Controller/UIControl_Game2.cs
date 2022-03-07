@@ -17,6 +17,7 @@ public class UIControl_Game2 : UIControl
 	public GameObject connectErrorPanel;
 
 	public Show_CenterTextPanel centerTextPanel;
+	public Show_CenterTextPanel subTextPanel;
 	public Show_CenterTimerPanel centerTimerPanel;
 
 	public TMPro.TextMeshProUGUI chipCountText;
@@ -144,6 +145,11 @@ public class UIControl_Game2 : UIControl
 	public void ShowCenterTextPanel(string content, float delay, float duration)
 	{
 		centerTextPanel.Show(content, delay, duration);
+	}
+
+	public void ShowSubTextPanel(string content, float delay, float duration)
+	{
+		subTextPanel.Show(content, delay, duration);
 	}
 
 	public void ShowCenterTimerPanel(float time)

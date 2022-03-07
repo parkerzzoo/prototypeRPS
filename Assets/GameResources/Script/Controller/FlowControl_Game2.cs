@@ -58,7 +58,7 @@ public class FlowControl_Game2 : FlowControl
 		{
 			if (_userList[i].IsMe && _userList[i].isAlive)
 			{
-				GameController.Instance.UIControl<UIControl_Game2>().ShowCenterTextPanel("손을 선택해주세요!", 0f, _duration);
+				GameController.Instance.UIControl<UIControl_Game2>().ShowSubTextPanel("손을 선택해주세요!", 0f, _duration);
 				//handSelectable = _userList[i].possiblePlay;
 				break;
 			}
@@ -126,7 +126,20 @@ public class FlowControl_Game2 : FlowControl
 			}
 		}
 
-		string _winnerName = null;
+		TeamInfo _myTeam = GameController.Instance.HandObjectControl<HandObjectControl_Game2>().MyHandObject.userData.teamInfo;
+		TeamInfo _winnerTeam = TeamInfo.A;
+		for (int i = 0; i < _userList.Count; i++)
+		{
+			if (_userList[i].isAlive)
+			{
+				_winnerTeam = _userList[i].teamInfo;
+				break;
+			}
+		}
+
+		GameController.Instance.UIControl<UIControl_Game2>().ShowCenterTextPanel(_myTeam == _winnerTeam? "WIN": "LOSE", 0f, 3f);
+
+		/*string _winnerName = null;
 		for (int i = 0; i < _userList.Count; i++)
 		{
 			if (_userList[i].isAlive)
@@ -135,9 +148,9 @@ public class FlowControl_Game2 : FlowControl
 				break;
 			}
 		}
-
+		
 		if (string.IsNullOrEmpty(_winnerName))
-			_winnerName = "없음";
+			_winnerName = "없음";*/
 		//GameController.Instance.UIControl<UIControl_Game2>().ShowCenterTextPanel("우승자: " + _winnerName, 0f, 3f);
 
 		GameController.Instance.HandObjectControl<HandObjectControl_Game2>().OnEndGame(_userList);

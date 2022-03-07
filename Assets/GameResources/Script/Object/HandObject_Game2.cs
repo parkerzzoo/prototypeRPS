@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class HandObject_Game2 : MonoBehaviour
+public class HandObject_Game2 : HandObject
 {
     public enum HandManyPeopleState { Empty, WaitingPlayer, LoseWaiting, Ready }
 
     private HandManyPeopleState curState = HandManyPeopleState.Empty;
     public HandManyPeopleState CurState { get { return curState; } }
 
-    public Transform bringChipPos;
+    //public Transform bringChipPos;
 
     [SerializeField] private Transform chipCreatePos;
     [SerializeField] private Transform chipGivePos;

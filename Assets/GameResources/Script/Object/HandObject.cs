@@ -8,7 +8,8 @@ public enum ResultType { win, lose, draw }
 public enum TeamInfo { A = 0, B }
 public class HandObject : MonoBehaviour
 {
-    public Color winColor;
+    public Transform bringChipPos;
+    /*public Color winColor;
     public Color loseColor;
     public Color drawColor;
 
@@ -107,5 +108,5 @@ public class HandObject : MonoBehaviour
     public void InitResult()
     {
         handImage.color = Color.white;
-    }
+    }*/
 }
